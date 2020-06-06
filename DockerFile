@@ -1,0 +1,25 @@
+FROM golang:alpine
+
+# Install git
+RUN apk update & apk add --no-cache git
+
+# Working directory
+WORKDIR $GOPATH/src/urlShortner/
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
+COPY . .
+
+# Build the Go app
+RUN go build -o ./go/bin/urlShortner
+
+
+# This container exposes port 8080 to the outside world
+EXPOSE 8080
+
+# Run the binary program produced by `go install`
+CMD ["./go/bin/urlShortner"]
+
